@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Employee</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#f1f5f9;
+    margin:0;
+    padding:0;
+}
+
+/* MAIN CONTAINER */
+.container{
+    width:900px;
+    margin:40px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+/* TITLE */
+h2{
+    text-align:center;
+    color:#2563eb;
+    margin-bottom:20px;
+}
+
+/* FORM */
+.form-group{
+    margin-bottom:15px;
+}
+
+label{
+    font-weight:bold;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+button:hover{
+    background:#1e40af;
+}
+
+/* NO DATA */
+.no-data{
+    text-align:center;
+    color:red;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+/* TABLE WRAPPER */
+.table-wrapper{
+    margin-top:25px;
+    overflow-x:auto;
+}
+
+/* TABLE DESIGN */
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+th{
+    background:linear-gradient(90deg,#2563eb,#1e40af);
+    color:white;
+    padding:12px;
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:center;
+    font-size:14px;
+}
+
+tr:hover{
+    background:#f1f5ff;
+    transition:0.2s;
+}
+
+tr:nth-child(even){
+    background:#fafafa;
+}
+
+.header{
+    background:linear-gradient(90deg,#2563eb,#7c3aed);
+    color:white;
+    padding:20px 30px;
+    border-radius:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.header h1{
+    font-size:30px;
+}
+
+.home-btn{
+    text-decoration:none;
+    background:white;
+    color:#2563eb;
+    padding:10px 20px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+	
+	<div class="header">
+	    <h1><i class="fa-solid fa-users"></i> Employee Details</h1>
+
+	    <a href="/home.html" class="home-btn">
+	        <i class="fa-solid fa-house"></i> Home
+	    </a>
+	</div>
+
+<h2><i class="fa fa-search"></i> Search Employee</h2>
+
+<!-- SEARCH FORM -->
+<form action="/employee/search" method="get">
+
+<div class="form-group">
+<label>Search By</label>
+<select name="searchType">
+    <option value="name">Employee Name</option>
+    <option value="department">Department</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Enter Value</label>
+<input type="text"
+       name="keyword"
+       placeholder="Example: IT or Kantharao"
+       required>
+</div>
+
+<button type="submit">
+<i class="fa fa-search"></i> Search
+</button>
+
+</form>
+
+<!-- NO DATA MESSAGE -->
+<p class="no-data"
+   th:if="${employee != null and #lists.isEmpty(employee)}">
+   No employees found
+</p>
+
+<!-- RESULT TABLE -->
+<div class="table-wrapper">
+
+<table th:if="${employee != null and !#lists.isEmpty(employee)}">
+
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Designation</th>
+        <th>Salary</th>
+        <th>Join Date</th>
+    </tr>
+
+    <tr th:each="emp : ${employee}">
+        <td th:text="${emp.empId}"></td>
+        <td th:text="${emp.name}"></td>
+        <td th:text="${emp.email}"></td>
+        <td th:text="${emp.department}"></td>
+        <td th:text="${emp.designation}"></td>
+        <td th:text="${emp.salary}"></td>
+        <td th:text="${#temporals.format(emp.joinDate, 'dd-MM-yyyy')}"></td>
+    </tr>
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

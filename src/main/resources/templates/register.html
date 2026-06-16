@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding:20px;
+        }
+
+        .container{
+            width:100%;
+            max-width:850px;
+            background:#fff;
+            border-radius:20px;
+            overflow:hidden;
+            box-shadow:0 15px 40px rgba(0,0,0,.15);
+        }
+
+        .header{
+            background:linear-gradient(90deg,#2563eb,#7c3aed);
+            color:white;
+            padding:30px;
+            text-align:center;
+        }
+
+        .header h1{
+            font-size:32px;
+        }
+
+        .header p{
+            margin-top:8px;
+            opacity:.9;
+        }
+
+        .form-section{
+            padding:35px;
+        }
+
+        .form-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:20px;
+        }
+
+        .form-group{
+            display:flex;
+            flex-direction:column;
+        }
+
+        .form-group label{
+            margin-bottom:8px;
+            font-weight:600;
+            color:#334155;
+        }
+
+        .input-box{
+            position:relative;
+        }
+
+        .input-box i{
+            position:absolute;
+            left:14px;
+            top:50%;
+            transform:translateY(-50%);
+            color:#64748b;
+        }
+
+        .input-box input,
+        .input-box select{
+            width:100%;
+            padding:13px 13px 13px 42px;
+            border:1px solid #cbd5e1;
+            border-radius:10px;
+            font-size:15px;
+            transition:.3s;
+        }
+
+        .input-box input:focus,
+        .input-box select:focus{
+            outline:none;
+            border-color:#2563eb;
+            box-shadow:0 0 8px rgba(37,99,235,.25);
+        }
+
+        .full-width{
+            grid-column:1/3;
+        }
+
+        .button-group{
+            display:flex;
+            gap:15px;
+            margin-top:30px;
+        }
+
+        .btn{
+            flex:1;
+            border:none;
+            padding:14px;
+            border-radius:10px;
+            font-size:16px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        .save-btn{
+            background:#16a34a;
+            color:white;
+        }
+
+        .save-btn:hover{
+            background:#15803d;
+        }
+
+        .reset-btn{
+            background:#dc2626;
+            color:white;
+        }
+
+        .reset-btn:hover{
+            background:#b91c1c;
+        }
+
+        .footer{
+            text-align:center;
+            padding:20px;
+            color:#64748b;
+            border-top:1px solid #e2e8f0;
+        }
+
+        @media(max-width:768px){
+            .form-grid{
+                grid-template-columns:1fr;
+            }
+            .full-width{
+                grid-column:auto;
+            }
+            .button-group{
+                flex-direction:column;
+            }
+        }
+
+        /* --- SUCCESS POPUP STYLING --- */
+        .popup{
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.5);
+            justify-content:center;
+            align-items:center;
+            z-index:1000;
+        }
+
+        .popup-content{
+            background:#fff;
+            padding:30px;
+            border-radius:15px;
+            text-align:center;
+            width:400px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .popup-content i.success-icon{
+            font-size:70px;
+            color:#16a34a;
+            margin-bottom:15px;
+        }
+
+        .popup-buttons{
+            display:flex;
+            justify-content:center;
+            gap:15px;
+            margin-top:25px;
+            width: 100%;
+        }
+
+        .popup-btn{
+            flex: 1;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration:none;
+            color:white;
+            padding:12px 20px;
+            border-radius:8px;
+            font-weight:bold;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .register-btn{
+            background:#16a34a;
+        }
+        
+        .register-btn:hover{
+            background:#15803d;
+        }
+
+        .home-btn{
+            background:#2563eb;
+        }
+
+        .home-btn:hover{
+            background:#1d4ed8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1><i class="fa-solid fa-users"></i> Employee Registration</h1>
+        <p>Human Resource Management System</p>
+    </div>
+
+    <div class="form-section">
+        <form action="/employee/save" method="post" id="employeeForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Employee Name</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="name" maxlength="20" placeholder="Enter employee name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" name="email" maxlength="30" placeholder="Enter email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-building"></i>
+                        <select name="department" required>
+                            <option value="">Select Department</option>
+                            <option>IT</option>
+                            <option>HR</option>
+                            <option>Finance</option>
+                            <option>Sales</option>
+                            <option>Operations</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Designation</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <input type="text" name="designation" placeholder="Enter designation" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Salary</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <input type="number" name="salary" min="1" placeholder="Enter salary" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Join Date</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-calendar"></i>
+                        <input type="date" name="joinDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Employee Remarks</label>
+                    <div class="input-box">
+                        <i class="fa-solid fa-note-sticky"></i>
+                        <input type="text" name="remarks" placeholder="Optional remarks">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn save-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Employee
+                </button>
+                <button type="reset" class="btn reset-btn">
+                    <i class="fa-solid fa-rotate-left"></i> Reset Form
+                </button>
+				<a href="/home.html" class="popup-btn home-btn">
+				   <i class="fa-solid fa-house" style="margin-right: 6px;"></i> Home
+				 </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">
+        © 2026 Employee Management System | Spring Boot + Oracle Database
+    </div>
+
+</div>
+
+<div id="successPopup" class="popup">
+    <div class="popup-content">
+        <i class="fa-solid fa-circle-check success-icon"></i>
+        <h2>Success</h2>
+        <p id="popupMessage">Employee Registered Successfully!</p>
+        
+        <div class="popup-buttons">
+            <button type="button" onclick="closePopup()" class="popup-btn register-btn">
+                <i class="fa-solid fa-xmark" style="margin-right: 6px;"></i> Close
+            </button>
+            
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+
+window.onload = function() {
+
+    let message = /*[[${message}]]*/ null;
+
+    if(message != null){
+
+        document.getElementById("popupMessage").innerText = message;
+
+        document.getElementById("successPopup").style.display = "flex";
+
+        if(message.includes("already exists")){
+            document.querySelector(".popup-content i")
+                    .className = "fa-solid fa-circle-xmark";
+            document.querySelector(".popup-content i")
+                    .style.color = "red";
+        }
+    }
+}
+
+function closePopup(){
+    document.getElementById("successPopup").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Edit Employee</title>
+
+<style>
+body{
+    font-family:Segoe UI;
+    background:#f1f5f9;
+}
+
+.container{
+    width:40%;
+    margin:50px auto;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+}
+
+h2{
+    text-align:center;
+    color:#2563eb;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    background:green;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Edit Employee</h2>
+
+<form th:action="@{/employee/update}" th:object="${employee}" method="post">
+
+    <!-- VERY IMPORTANT -->
+    <input type="hidden" th:field="*{empId}" />
+
+    <!-- prevents ORA-01407 error -->
+    <input type="hidden" th:field="*{joinDate}" />
+
+    Name:
+    <input type="text" th:field="*{name}" />
+
+    Email:
+    <input type="text" th:field="*{email}" />
+
+    Department:
+    <input type="text" th:field="*{department}" />
+
+    Designation:
+    <input type="text" th:field="*{designation}" />
+
+    Salary:
+    <input type="number" th:field="*{salary}" />
+
+    <button type="submit">Update</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
